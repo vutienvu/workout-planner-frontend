@@ -1,6 +1,11 @@
-<script setup lang="ts">
-</script>
-
 <template>
-  <h1>Hello world</h1>
+  <v-app>
+    <Sidebar />
+
+
+  </v-app>
 </template>
+
+<script setup lang="ts">
+  import Sidebar from "./app/components/Sidebar.vue"
+</script>
