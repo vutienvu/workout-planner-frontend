@@ -2,7 +2,9 @@
   <v-app>
     <Sidebar />
 
-
+    <main>
+      <RouterView />
+    </main>
   </v-app>
 </template>
 
