@@ -6,7 +6,7 @@
           <v-skeleton-loader v-if="isFetchingWorkouts" type="list-item-two-line"></v-skeleton-loader>
 
           <div v-else v-if="workouts.length > 0" v-for="workout in workouts" :key="workout.workoutId" class="position-relative">
-              <v-list-item link height=50 :title="workout.name" @click="handleOpenWorkout"></v-list-item>
+              <v-list-item link height=50 :title="workout.name" @click="handleOpenWorkout(workout.workoutId)"></v-list-item>
               <div class="position-absolute right-0" style="top: 50%; transform: translateY(-50%)">
                 <v-btn icon="mdi-pencil" size="x-small"  color="primary" @click="handleRenameWorkout" class="mr-1"></v-btn>
                 <v-btn icon="mdi-delete" size="x-small" @click="handleDeleteWorkout" class="mr-1"></v-btn>
@@ -39,8 +39,13 @@ onMounted(async () => {
           });
 });
 
-const handleOpenWorkout = () => {
-  router.push('/workout');
+const handleOpenWorkout = (workoutId: number) => {
+  router.push({
+    name: 'workout',
+    params: {
+      workoutId: workoutId
+    }
+  });
 }
 
 const handleRenameWorkout = (event: Event) => {

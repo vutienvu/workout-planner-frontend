@@ -6,7 +6,8 @@ const routes= [
         component: () => import('../view/EmptyView.vue')
     },
     {
-        path: '/workout',
+        path: '/workouts/:workoutId',
+        name: 'workout',
         component: () => import('../view/WorkoutView.vue')
     }
 ];
