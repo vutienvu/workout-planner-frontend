@@ -1,15 +1,17 @@
 <template>
-    <v-navigation-drawer :width="300">
-      <v-list-item title="Your workouts"></v-list-item>
-      <v-divider></v-divider>
-        <div v-if="workouts.length > 0" v-for="workout in workouts" :key="workout.workoutId" class="position-relative">
-          <v-list-item link height=50 :title="workout.name" @click="handleLinkClick"></v-list-item>
-          <div class="position-absolute right-0" style="top: 50%; transform: translateY(-50%)">
-            <v-btn icon="mdi-pencil" size="x-small"  color="primary" @click="handleRenameWorkout" class="mr-1"></v-btn>
-            <v-btn icon="mdi-delete" size="x-small" @click="handleDeleteWorkout" class="mr-1"></v-btn>
+    <aside>
+      <v-navigation-drawer :width="300">
+        <v-list-item title="Your workouts"></v-list-item>
+        <v-divider></v-divider>
+          <div v-if="workouts.length > 0" v-for="workout in workouts" :key="workout.workoutId" class="position-relative">
+            <v-list-item link height=50 :title="workout.name" @click="handleLinkClick"></v-list-item>
+            <div class="position-absolute right-0" style="top: 50%; transform: translateY(-50%)">
+              <v-btn icon="mdi-pencil" size="x-small"  color="primary" @click="handleRenameWorkout" class="mr-1"></v-btn>
+              <v-btn icon="mdi-delete" size="x-small" @click="handleDeleteWorkout" class="mr-1"></v-btn>
+            </div>
           </div>
-        </div>
-    </v-navigation-drawer>
+      </v-navigation-drawer>
+    </aside>
 </template>
 
 <script setup lang="ts">
