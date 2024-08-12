@@ -18,3 +18,15 @@ export async function getWorkouts(){
 
     return workouts;
 }
+
+export async function getWorkout(workoutId: number) {
+    const workout: Workout | null = await axiosInstance.get<Workout>(`/workouts/${workoutId}`).then(response => {
+        console.log("Calling getWorkout!");
+        return response.data;
+    }).catch(error => {
+        console.error("Error fetching workout: ", error);
+        return null;
+    });
+
+    return workout;
+}
