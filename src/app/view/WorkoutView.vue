@@ -20,27 +20,27 @@
   onMounted(async () => {
     const workoutId: number = Number(route.params.workoutId);
 
-    getWorkout(workoutId).then(workoutResponse => {
-      workout.value = workoutResponse;
-      isFetchingWorkout.value = false;
-    }).catch(error => {
-      console.log("ERROR: ", error);
-    });
+    fetchWorkout(workoutId);
   });
 
   watch(() => route.params.workoutId, (newWorkoutId, oldWorkoutId) => {
     if (newWorkoutId !== oldWorkoutId) {
       isFetchingWorkout.value = true;
 
-      getWorkout(Number(newWorkoutId)).then(workoutResponse => {
-        workout.value = workoutResponse;
-        isFetchingWorkout.value = false;
-      }).catch(error => {
-        console.log("ERROR: ", error);
-      });
+      fetchWorkout(Number(newWorkoutId));
     }
   });
 
+  const fetchWorkout = (workoutId: number) => {
+    getWorkout(Number(workoutId))
+        .then(workoutResponse => {
+          workout.value = workoutResponse;
+          isFetchingWorkout.value = false;
+        }).catch(error => {
+          console.log(error.response);
+          isFetchingWorkout.value = false;
+        });
+  }
 
 </script>
 
