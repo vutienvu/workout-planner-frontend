@@ -20,9 +20,18 @@ export async function getWorkouts(){
 }
 
 export async function getWorkout(workoutId: number) {
-    const workout: Workout | null = await axiosInstance.get<Workout>(`/workouts/${workoutId}`).then(response => {
-        console.log("Calling getWorkout!");
-        return response.data;
+    return axiosInstance.get<Workout>(`/workouts/${workoutId}`)
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+export async function deleteWorkout(workoutId: number) {
+    await axiosInstance.delete<Workout>(`/workouts/${workoutId}`).then(() => {
+        console.log("Successfuly deleted workout.");
     }).catch(error => {
         console.error("Error fetching workout: ", error);
         return null;
