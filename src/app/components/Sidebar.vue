@@ -8,8 +8,8 @@
           <div v-else v-if="workouts.length > 0" v-for="workout in workouts" :key="workout.workoutId" class="position-relative">
               <v-list-item link height=50 :title="workout.name" @click="handleOpenWorkout(workout.workoutId)"></v-list-item>
               <div class="position-absolute right-0" style="top: 50%; transform: translateY(-50%)">
-                <v-btn icon="mdi-pencil" size="x-small"  color="primary" @click="e => handleRenameWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
-                <v-btn icon="mdi-delete" size="x-small" @click="e => handleDeleteWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
+                <v-btn icon="mdi-pencil" size="x-small"  color="primary" @click="(e: Event) => handleRenameWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
+                <v-btn icon="mdi-delete" size="x-small" @click="(e: Event) => handleDeleteWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
               </div>
           </div>
       </v-navigation-drawer>
@@ -54,7 +54,10 @@ const handleRenameWorkout = (event: Event, workoutId: number) => {
 
 const handleDeleteWorkout = (event: Event, workoutId: number) => {
   event.stopPropagation();
-  deleteWorkout(workoutId);
+  deleteWorkout(workoutId)
+      .catch(error => {
+        console.log(error.response);
+      })
 }
 
 </script>

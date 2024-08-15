@@ -28,12 +28,8 @@ export async function getWorkout(workoutId: number): Promise<Workout> {
 }
 
 export async function deleteWorkout(workoutId: number) {
-    await axiosInstance.delete<Workout>(`/workouts/${workoutId}`).then(() => {
-        console.log("Successfuly deleted workout.");
-    }).catch(error => {
-        console.error("Error fetching workout: ", error);
-        return null;
-    });
-
-    return workout;
+    return axiosInstance.delete<Workout>(`/workouts/${workoutId}`)
+        .catch(error => {
+            throw error;
+        });
 }
