@@ -8,18 +8,16 @@ export interface Workout {
 }
 
 export async function getWorkouts(){
-    const workouts: Workout[] = await axiosInstance.get<Workout[]>('/workouts').then(response => {
-        console.log("Calling getWorkouts!");
-        return response.data;
-    }).catch(error => {
-        console.error("Error fetching workouts: ", error);
-        return [];
-    });
-
-    return workouts;
+    return axiosInstance.get<Workout[]>(`/workouts`)
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            throw error;
+        });
 }
 
-export async function getWorkout(workoutId: number) {
+export async function getWorkout(workoutId: number): Promise<Workout> {
     return axiosInstance.get<Workout>(`/workouts/${workoutId}`)
         .then(response => {
             return response.data;
