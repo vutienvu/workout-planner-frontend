@@ -18,8 +18,8 @@
 
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
-import {useRouter, useRoute} from 'vue-router'
-import {getWorkouts, deleteWorkout, Workout} from '../api/WorkoutAPI.ts'
+import {useRoute, useRouter} from 'vue-router'
+import {deleteWorkout, getWorkouts, Workout} from '../api/WorkoutAPI.ts'
 
 const workouts = ref<Workout[]>([]);
 const isFetchingWorkouts = ref<boolean>(true);
@@ -55,6 +55,9 @@ const handleRenameWorkout = (event: Event, workoutId: number) => {
 const handleDeleteWorkout = (event: Event, workoutId: number) => {
   event.stopPropagation();
   deleteWorkout(workoutId)
+      .then(() => {
+        workouts.value = workouts.value.filter((w: Workout) => w.workoutId !== workoutId);
+      })
       .catch(error => {
         console.log(error.response);
       })
