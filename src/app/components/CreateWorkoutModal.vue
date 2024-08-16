@@ -27,6 +27,20 @@
       </template>
     </v-card>
   </v-dialog>
+
+  <template>
+    <div class="text-center ma-2">
+      <v-snackbar
+          v-model="isCreated"
+          :timeout="2000"
+          location="top"
+          color="green"
+          style="--v-layout-left: 0"
+      >
+        {{ "Workout succesffuly created!" }}
+      </v-snackbar>
+    </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -36,6 +50,7 @@ import {createWorkout, Workout, WorkoutRequest} from '../api/WorkoutAPI.ts'
 const workouts = defineModel<Workout[]>('workouts', { required: true});
 
 const isOpen = ref<boolean>(false);
+const isCreated = ref<boolean>(false);
 const workoutName = ref<string>("");
 
 const handleCreateWorkout = () => {
@@ -46,6 +61,7 @@ const handleCreateWorkout = () => {
   createWorkout(newWorkout)
       .then(workout => {
         workouts.value.push(workout);
+        isCreated.value = true;
         isOpen.value = false;
       })
       .catch(error => {
