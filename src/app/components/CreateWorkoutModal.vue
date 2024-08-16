@@ -53,7 +53,7 @@ const handleCreateWorkout = () => {
 }
 
 const isWorkoutNameValid = computed(() => {
-  return (!!workoutName.value || false) && (workoutName.value.trim() !== '' || false);
+  return !!workoutName.value && workoutName.value.trim() !== '';
 });
 
 const workoutNameRules = {
