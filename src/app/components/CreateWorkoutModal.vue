@@ -31,8 +31,9 @@
 
 <script setup lang="ts">
 import {computed, ref} from 'vue'
-import {createWorkout, WorkoutRequest} from '../api/WorkoutAPI.ts'
+import {createWorkout, Workout, WorkoutRequest} from '../api/WorkoutAPI.ts'
 
+const workouts = defineModel<Workout[]>('workouts', { required: true});
 
 const isOpen = ref<boolean>(false);
 const workoutName = ref<string>("");
@@ -44,10 +45,12 @@ const handleCreateWorkout = () => {
 
   createWorkout(newWorkout)
       .then(workout => {
-        console.log(workout)
+        workouts.value.push(workout);
+        isOpen.value = false;
       })
       .catch(error => {
         console.log(error);
+        isOpen.value = false;
       })
 
 }

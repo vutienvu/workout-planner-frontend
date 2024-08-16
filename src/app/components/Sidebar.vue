@@ -13,7 +13,7 @@
               </div>
           </div>
 
-          <CreateWorkoutModal />
+          <CreateWorkoutModal v-model:workouts="workouts"/>
       </v-navigation-drawer>
     </aside>
 </template>
