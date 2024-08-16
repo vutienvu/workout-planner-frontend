@@ -12,6 +12,8 @@
                 <v-btn icon="mdi-delete" size="x-small" @click="(e: Event) => handleDeleteWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
               </div>
           </div>
+
+          <CreateWorkoutModal />
       </v-navigation-drawer>
     </aside>
 </template>
@@ -20,6 +22,7 @@
 import {onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {deleteWorkout, getWorkouts, Workout} from '../api/WorkoutAPI.ts'
+import CreateWorkoutModal from './CreateWorkoutModal.vue'
 
 const workouts = ref<Workout[]>([]);
 const isFetchingWorkouts = ref<boolean>(true);
