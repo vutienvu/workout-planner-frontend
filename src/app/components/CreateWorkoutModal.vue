@@ -16,6 +16,8 @@
             text="Create"
             variant="elevated"
             color="primary"
+            :disabled="!isWorkoutNameValid"
+            @click="handleCreateWorkout"
         ></v-btn>
         <v-btn
             class=""
@@ -28,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
 import {computed, ref} from 'vue'
 import {createWorkout, WorkoutRequest} from '../api/WorkoutAPI.ts'
 
@@ -51,6 +52,14 @@ const handleCreateWorkout = () => {
 
 }
 
+const isWorkoutNameValid = computed(() => {
+  return (!!workoutName.value || false) && (workoutName.value.trim() !== '' || false);
+});
+
+const workoutNameRules = {
+  required: (value: string) => !!value || 'Workout name is required',
+  noWhiteSpaces: (value: string) => value.trim() !== '' || 'Workout name cannot be only whitespaces'
+};
 </script>
 
 <style scoped>
