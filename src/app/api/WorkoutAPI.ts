@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import axiosInstance from './BaseAPI.ts'
 import { Exercise } from './ExerciseAPI.ts'
 
@@ -39,7 +40,7 @@ export async function deleteWorkout(workoutId: number) {
 }
 
 export async function createWorkout(newWorkout: WorkoutRequest) {
-    return axiosInstance.post<WorkoutRequest>(`/workouts`, newWorkout)
+    return axiosInstance.post<WorkoutRequest, AxiosResponse<Workout>>(`/workouts`, newWorkout)
         .then(response => {
             return response.data;
         })
