@@ -45,9 +45,9 @@
 
 <script setup lang="ts">
 import {computed, ref} from 'vue'
-import {createWorkout, Workout, WorkoutRequest} from '../api/WorkoutAPI.ts'
+import {createWorkout, WorkoutResponse, WorkoutRequest} from '../api/WorkoutAPI.ts'
 
-const workouts = defineModel<Workout[]>('workouts', { required: true});
+const workouts = defineModel<WorkoutResponse[]>('workouts', { required: true});
 
 const isOpen = ref<boolean>(false);
 const isCreated = ref<boolean>(false);

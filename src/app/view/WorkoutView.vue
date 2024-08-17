@@ -9,10 +9,10 @@
 <script setup lang="ts">
   import {onMounted, ref, watch} from 'vue'
   import {useRoute} from 'vue-router'
-  import {getWorkout, Workout} from '../api/WorkoutAPI.ts'
+  import {getWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
   import Exercise from '../components/Exercise.vue'
 
-  const workout = ref<Workout | null>(null);
+  const workout = ref<WorkoutResponse | null>(null);
   const isFetchingWorkout = ref<boolean>(true);
 
   const route = useRoute();

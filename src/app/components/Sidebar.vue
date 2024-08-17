@@ -21,10 +21,10 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {deleteWorkout, getWorkouts, Workout} from '../api/WorkoutAPI.ts'
+import {deleteWorkout, getWorkouts, WorkoutResponse} from '../api/WorkoutAPI.ts'
 import CreateWorkoutModal from './CreateWorkoutModal.vue'
 
-const workouts = ref<Workout[]>([]);
+const workouts = ref<WorkoutResponse[]>([]);
 const isFetchingWorkouts = ref<boolean>(true);
 
 const router = useRouter();
@@ -59,7 +59,7 @@ const handleDeleteWorkout = (event: Event, workoutId: number) => {
   event.stopPropagation();
   deleteWorkout(workoutId)
       .then(() => {
-        workouts.value = workouts.value.filter((w: Workout) => w.workoutId !== workoutId);
+        workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== workoutId);
       })
       .catch(error => {
         console.log(error.response);
