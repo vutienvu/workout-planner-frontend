@@ -1,26 +1,21 @@
 <template>
-  <div class="d-flex justify-center my-2">
-    <v-btn icon="mdi-plus" size="small" @click="isOpen = true"></v-btn>
-  </div>
-
   <v-dialog v-model="isOpen" width="400">
     <v-card
         max-width="400"
         prepend-icon="mdi-pencil"
-        title="Create your new workout!"
+        :title="props.createType ? 'Create your workout!' : 'Edit your workout!'"
     >
       <v-text-field v-model="workoutName" label="Workout name" variant="underlined" :rules="[workoutNameRules.required, workoutNameRules.noWhiteSpaces]" class="px-6"></v-text-field>
       <template v-slot:actions>
         <v-btn
             class="ms-auto"
-            text="Create"
+            :text="props.createType ? 'Create' : 'Update'"
             variant="elevated"
             color="primary"
             :disabled="!isWorkoutNameValid"
-            @click="handleCreateWorkout"
+            @click="props.createType ? handleCreateWorkout() : handleUpdateWorkout()"
         ></v-btn>
         <v-btn
-            class=""
             text="Cancel"
             @click="isOpen = false"
         ></v-btn>
@@ -31,27 +26,64 @@
   <template>
     <div class="text-center ma-2">
       <v-snackbar
-          v-model="isCreated"
+          v-model="isDone"
           :timeout="2000"
           location="top"
           color="green"
           style="--v-layout-left: 0"
       >
-        {{ "Workout succesffuly created!" }}
+        {{ props.createType ? "Workout successfuly created!" : "Workout successfuly updated!"}}
       </v-snackbar>
     </div>
   </template>
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
-import {createWorkout, WorkoutResponse, WorkoutRequest} from '../api/WorkoutAPI.ts'
+import {computed, watch, ref} from 'vue'
+import {createWorkout, updateWorkout, WorkoutResponse, WorkoutRequest} from '../api/WorkoutAPI.ts'
+
+interface WorkoutModalProps {
+  workoutId?: number
+  oldWorkoutName?: string
+  createType: boolean
+}
 
 const workouts = defineModel<WorkoutResponse[]>('workouts', { required: true});
+const isOpen = defineModel<boolean>('openModal', { required: true});
 
-const isOpen = ref<boolean>(false);
-const isCreated = ref<boolean>(false);
+const props = defineProps<WorkoutModalProps>();
+
+const isDone = ref<boolean>(false);
 const workoutName = ref<string>("");
+
+watch(() => isOpen.value, (newValue) => {
+  if(newValue && props.oldWorkoutName) {
+    workoutName.value = props.oldWorkoutName;
+  }
+});
+
+const handleUpdateWorkout = () => {
+  const newWorkout: WorkoutRequest = {
+    name: workoutName.value
+  };
+
+  if (props.workoutId) {
+    updateWorkout(props.workoutId, newWorkout)
+        .then(() => {
+          workouts.value.forEach(w => {
+            if (w.workoutId === props.workoutId) {
+              w.name = workoutName.value;
+              isOpen.value = false;
+              workoutName.value = "";
+              return;
+            }
+          });
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+  }
+}
 
 const handleCreateWorkout = () => {
   const newWorkout: WorkoutRequest = {
@@ -61,8 +93,9 @@ const handleCreateWorkout = () => {
   createWorkout(newWorkout)
       .then(workout => {
         workouts.value.push(workout);
-        isCreated.value = true;
+        isDone.value = true;
         isOpen.value = false;
+        workoutName.value = "";
       })
       .catch(error => {
         console.log(error);
