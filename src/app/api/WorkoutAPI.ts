@@ -48,3 +48,10 @@ export async function createWorkout(newWorkout: WorkoutRequest) {
             throw error;
         });
 }
+
+export async function updateWorkout(workoutId: number, newWorkout: WorkoutRequest) {
+    axiosInstance.put<WorkoutRequest>(`/workouts/${workoutId}`, newWorkout)
+        .catch(error => {
+            throw error;
+        });
+}
