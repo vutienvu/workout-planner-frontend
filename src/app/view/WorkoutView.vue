@@ -4,7 +4,7 @@
 
     <div v-else>
       <div v-if="workout?.exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
-      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-name="exercise.name" :is-fetching="isFetchingWorkout"/>
+      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :name="exercise.name" :pause-duration="exercise.pauseDuration" :is-fetching="isFetchingWorkout"/>
     </div>
 
     <div class="d-flex justify-center mt-4">
