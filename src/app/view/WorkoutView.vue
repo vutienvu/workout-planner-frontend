@@ -11,7 +11,7 @@
       <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
     </div>
 
-    <ExerciseModal v-model:open-modal="isCreatingExercise"/>
+    <ExerciseModal v-if="workout" v-model:exercises="workout.exercises as ExerciseResponse[]" v-model:open-modal="isCreatingExercise"/>
   </div>
 </template>
 
@@ -19,6 +19,7 @@
   import {onMounted, ref, watch} from 'vue'
   import {useRoute} from 'vue-router'
   import {getWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
+  import {ExerciseResponse} from '../api/ExerciseAPI'
   import Exercise from '../components/Exercise.vue'
   import ExerciseModal from '../components/ExerciseModal.vue'
 

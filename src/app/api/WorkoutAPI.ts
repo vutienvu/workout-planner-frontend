@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import axiosInstance from './BaseAPI.ts'
-import { Exercise } from './ExerciseAPI.ts'
+import { ExerciseResponse } from './ExerciseAPI.ts'
 
 export interface WorkoutRequest {
     name: string
@@ -9,7 +9,7 @@ export interface WorkoutRequest {
 export interface WorkoutResponse {
     workoutId: number
     name: string
-    exercises: Exercise[]
+    exercises: ExerciseResponse[]
 }
 
 export async function getWorkouts(){
