@@ -6,6 +6,10 @@
       <div v-if="workout?.exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
       <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-name="exercise.name" :is-fetching="isFetchingWorkout"/>
     </div>
+
+    <div class="d-flex justify-center mt-4">
+      <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
+    </div>
   </div>
 </template>
 
@@ -43,6 +47,10 @@
           console.log(error.response);
           isFetchingWorkout.value = false;
         });
+  }
+
+  const handleCreateExercise = () => {
+    alert("Create exercise!");
   }
 
 </script>
