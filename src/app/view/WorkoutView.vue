@@ -2,7 +2,10 @@
   <div class="h-screen mr-8" style="margin-left: 332px">
     <v-skeleton-loader v-if="isFetchingWorkout" type="list-item-two-line" class="mt-8 rounded-sm"></v-skeleton-loader>
 
-    <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-name="exercise.name" :is-fetching="isFetchingWorkout"/>
+    <div v-else>
+      <div v-if="workout?.exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
+      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-name="exercise.name" :is-fetching="isFetchingWorkout"/>
+    </div>
   </div>
 </template>
 
