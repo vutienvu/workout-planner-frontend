@@ -24,13 +24,15 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const edit = defineModel<boolean>('edit', { required: true });
+
 const handleOpen = () => {
   console.log("Open exercise!");
 }
 
 const handleEdit = (e: Event) => {
   e.stopPropagation();
-  console.log("Edit exercise!");
+  edit.value = true;
 }
 
 </script>

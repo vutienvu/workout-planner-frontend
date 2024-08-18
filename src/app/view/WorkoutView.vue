@@ -4,7 +4,7 @@
 
     <div v-else>
       <div v-if="workout?.exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
-      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-id="exercise.exerciseId" :name="exercise.name" :pause-duration="exercise.pauseDuration" :is-fetching="isFetchingWorkout" :handle-remove="handleRemove"/>
+      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-id="exercise.exerciseId" :name="exercise.name" :pause-duration="exercise.pauseDuration" :is-fetching="isFetchingWorkout" :handle-remove="handleRemove" v-model:edit="isEditingExercise"/>
     </div>
 
     <div class="d-flex justify-center mt-4">
@@ -26,6 +26,7 @@
   const workout = ref<WorkoutResponse | null>(null);
   const isFetchingWorkout = ref<boolean>(true);
   const isCreatingExercise = ref<boolean>(false);
+  const isEditingExercise = ref<boolean>(false);
 
   const route = useRoute();
 
