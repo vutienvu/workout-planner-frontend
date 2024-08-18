@@ -3,27 +3,34 @@
     <v-skeleton-loader v-if="isFetchingWorkout" type="list-item-two-line" class="mt-8 rounded-sm"></v-skeleton-loader>
 
     <div v-else>
-      <div v-if="workout?.exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
-      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-id="exercise.exerciseId" :name="exercise.name" :pause-duration="exercise.pauseDuration" :is-fetching="isFetchingWorkout" :handle-remove="handleRemove" v-model:edit="isEditingExercise"/>
+      <div v-if="exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
+      <Exercise v-else v-for="exercise in exercises" :key="exercise.exerciseId"
+                :exercise-id="exercise.exerciseId"
+                :name="exercise.name"
+                :pause-duration="exercise.pauseDuration"
+                :is-fetching="isFetchingWorkout"
+                v-model:edit="isEditingExercise"
+                v-model:exercises="exercises"/>
     </div>
 
     <div class="d-flex justify-center mt-4">
       <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
     </div>
 
-    <ExerciseModal v-if="workout" v-model:exercises="workout.exercises as ExerciseResponse[]" v-model:open-modal="isCreatingExercise"/>
+    <ExerciseModal v-model:exercises="exercises as ExerciseResponse[]" v-model:open-modal="isCreatingExercise"/>
   </div>
 </template>
 
 <script setup lang="ts">
   import {onMounted, ref, watch} from 'vue'
   import {useRoute} from 'vue-router'
-  import {getWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
-  import {deleteExercise, ExerciseResponse} from '../api/ExerciseAPI'
+  import {getWorkout} from '../api/WorkoutAPI.ts'
+  import {ExerciseResponse} from '../api/ExerciseAPI'
   import Exercise from '../components/Exercise.vue'
   import ExerciseModal from '../components/ExerciseModal.vue'
 
-  const workout = ref<WorkoutResponse | null>(null);
+  // const workout = ref<WorkoutResponse | null>(null);
+  const exercises = ref<ExerciseResponse[]>([]);
   const isFetchingWorkout = ref<boolean>(true);
   const isCreatingExercise = ref<boolean>(false);
   const isEditingExercise = ref<boolean>(false);
@@ -47,7 +54,7 @@
   const fetchWorkout = (workoutId: number) => {
     getWorkout(Number(workoutId))
         .then(workoutResponse => {
-          workout.value = workoutResponse;
+          exercises.value = workoutResponse.exercises;
           isFetchingWorkout.value = false;
         }).catch(error => {
           console.log(error.response);
@@ -58,21 +65,6 @@
   const handleCreateExercise = () => {
     isCreatingExercise.value = true;
   }
-
-  const handleRemove = (e: Event, exerciseId: number) => {
-    e.stopPropagation();
-
-    deleteExercise(exerciseId)
-        .then(() => {
-          if(workout?.value) {
-            workout.value!.exercises = workout.value!.exercises.filter(e => e.exerciseId !== exerciseId);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-  }
-
 </script>
 
 <style scoped>

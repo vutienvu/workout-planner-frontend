@@ -7,24 +7,25 @@
 
     <template v-slot:append>
       <v-btn icon="mdi-pencil" color="primary" size="small" class="mr-2" @click="(e: Event) => handleEdit(e)"></v-btn>
-      <v-btn icon="mdi-delete" size="small" @click="(e: Event) => props.handleRemove(e, props.exerciseId)"></v-btn>
+      <v-btn icon="mdi-delete" size="small" @click="(e: Event) => handleRemove(e)"></v-btn>
     </template>
   </v-card>
 </template>
 
 <script setup lang="ts">
+import {deleteExercise, ExerciseResponse} from '../api/ExerciseAPI.ts'
 
 interface Props {
   exerciseId: number,
   name: string,
   pauseDuration: number,
   isFetching: boolean,
-  handleRemove: (e: Event, exerciseId: number) => void
 }
 
 const props = defineProps<Props>();
 
 const edit = defineModel<boolean>('edit', { required: true });
+const exercises = defineModel<ExerciseResponse[]>('exercises', { required: true });
 
 const handleOpen = () => {
   console.log("Open exercise!");
@@ -33,6 +34,18 @@ const handleOpen = () => {
 const handleEdit = (e: Event) => {
   e.stopPropagation();
   edit.value = true;
+}
+
+const handleRemove = (e: Event) => {
+  e.stopPropagation();
+
+  deleteExercise(props.exerciseId)
+      .then(() => {
+        exercises.value = exercises.value.filter(e => e.exerciseId !== props.exerciseId);
+      })
+      .catch(error => {
+        console.log(error);
+      });
 }
 
 </script>
