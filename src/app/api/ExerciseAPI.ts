@@ -15,6 +15,13 @@ export interface ExerciseResponse {
     workoutId: number
 }
 
+export async function deleteExercise(exerciseId: number) {
+    axiosInstance.delete<ExerciseResponse>(`/exercises/${exerciseId}`)
+        .catch(error => {
+            throw error;
+        });
+}
+
 export async function createExercise(newExercise: ExerciseRequest) {
     return axiosInstance.post<ExerciseRequest, AxiosResponse<ExerciseResponse>>('/exercises', newExercise)
         .then(response => {

@@ -7,16 +7,19 @@
 
     <template v-slot:append>
       <v-btn icon="mdi-pencil" color="primary" size="small" class="mr-2" @click="(e: Event) => handleEdit(e)"></v-btn>
-      <v-btn icon="mdi-delete" size="small" @click="(e: Event) => handleRemove(e)"></v-btn>
+      <v-btn icon="mdi-delete" size="small" @click="(e: Event) => props.handleRemove(e, props.exerciseId)"></v-btn>
     </template>
   </v-card>
 </template>
 
 <script setup lang="ts">
+
 interface Props {
+  exerciseId: number,
   name: string,
   pauseDuration: number,
-  isFetching: boolean
+  isFetching: boolean,
+  handleRemove: (e: Event, exerciseId: number) => void
 }
 
 const props = defineProps<Props>();
@@ -29,12 +32,6 @@ const handleEdit = (e: Event) => {
   e.stopPropagation();
   console.log("Edit exercise!");
 }
-
-const handleRemove = (e: Event) => {
-  e.stopPropagation();
-  console.log("Remove exercise!");
-}
-
 
 </script>
 

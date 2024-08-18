@@ -4,7 +4,7 @@
 
     <div v-else>
       <div v-if="workout?.exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
-      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :name="exercise.name" :pause-duration="exercise.pauseDuration" :is-fetching="isFetchingWorkout"/>
+      <Exercise v-else v-for="exercise in workout?.exercises" :key="exercise.exerciseId" :exercise-id="exercise.exerciseId" :name="exercise.name" :pause-duration="exercise.pauseDuration" :is-fetching="isFetchingWorkout" :handle-remove="handleRemove"/>
     </div>
 
     <div class="d-flex justify-center mt-4">
@@ -19,7 +19,7 @@
   import {onMounted, ref, watch} from 'vue'
   import {useRoute} from 'vue-router'
   import {getWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
-  import {ExerciseResponse} from '../api/ExerciseAPI'
+  import {deleteExercise, ExerciseResponse} from '../api/ExerciseAPI'
   import Exercise from '../components/Exercise.vue'
   import ExerciseModal from '../components/ExerciseModal.vue'
 
@@ -56,6 +56,20 @@
 
   const handleCreateExercise = () => {
     isCreatingExercise.value = true;
+  }
+
+  const handleRemove = (e: Event, exerciseId: number) => {
+    e.stopPropagation();
+
+    deleteExercise(exerciseId)
+        .then(() => {
+          if(workout?.value) {
+            workout.value!.exercises = workout.value!.exercises.filter(e => e.exerciseId !== exerciseId);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
   }
 
 </script>
