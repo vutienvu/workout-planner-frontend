@@ -10,6 +10,8 @@
     <div class="d-flex justify-center mt-4">
       <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
     </div>
+
+    <ExerciseModal v-model:open-modal="isCreatingExercise"/>
   </div>
 </template>
 
@@ -18,9 +20,11 @@
   import {useRoute} from 'vue-router'
   import {getWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
   import Exercise from '../components/Exercise.vue'
+  import ExerciseModal from '../components/ExerciseModal.vue'
 
   const workout = ref<WorkoutResponse | null>(null);
   const isFetchingWorkout = ref<boolean>(true);
+  const isCreatingExercise = ref<boolean>(false);
 
   const route = useRoute();
 
@@ -50,7 +54,7 @@
   }
 
   const handleCreateExercise = () => {
-    alert("Create exercise!");
+    isCreatingExercise.value = true;
   }
 
 </script>
