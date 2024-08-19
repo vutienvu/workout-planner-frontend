@@ -31,3 +31,10 @@ export async function createExercise(newExercise: ExerciseRequest) {
             throw error;
         })
 }
+
+export async function updateExercise(exerciseId: number, newExercise: ExerciseRequest) {
+    return axiosInstance.put<ExerciseRequest>(`/exercises/${exerciseId}`, newExercise)
+        .catch(error => {
+            throw error;
+        });
+}
