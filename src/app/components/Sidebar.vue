@@ -71,6 +71,9 @@ const handleDeleteWorkout = (event: Event, workoutId: number) => {
   deleteWorkout(workoutId)
       .then(() => {
         workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== workoutId);
+        router.push({
+          name: 'home'
+        })
       })
       .catch(error => {
         console.log(error.response);
