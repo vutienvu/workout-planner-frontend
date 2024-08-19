@@ -50,7 +50,7 @@ export async function createWorkout(newWorkout: WorkoutRequest) {
 }
 
 export async function updateWorkout(workoutId: number, newWorkout: WorkoutRequest) {
-    axiosInstance.put<WorkoutRequest>(`/workouts/${workoutId}`, newWorkout)
+    return axiosInstance.put<WorkoutRequest>(`/workouts/${workoutId}`, newWorkout)
         .catch(error => {
             throw error;
         });
