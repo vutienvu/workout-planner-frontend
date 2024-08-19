@@ -10,22 +10,34 @@
       <v-btn icon="mdi-delete" size="small" @click="(e: Event) => handleRemove(e)"></v-btn>
     </template>
   </v-card>
+
+  <ExerciseModal
+      :exercise-id="props.exerciseId"
+      :exercise-name="props.name"
+      :pause-duration="props.pauseDuration"
+      :workout-id="props.workoutId"
+      :create-type="false"
+      v-model:exercises="exercises"
+      v-model:open-modal="isOpenEdit"/>
 </template>
 
 <script setup lang="ts">
+import {ref} from 'vue'
+import ExerciseModal from '../components/ExerciseModal.vue'
 import {deleteExercise, ExerciseResponse} from '../api/ExerciseAPI.ts'
 
 interface Props {
   exerciseId: number,
   name: string,
   pauseDuration: number,
-  isFetching: boolean,
+  workoutId: number,
 }
 
 const props = defineProps<Props>();
 
-const edit = defineModel<boolean>('edit', { required: true });
 const exercises = defineModel<ExerciseResponse[]>('exercises', { required: true });
+
+const isOpenEdit = ref<boolean>(false);
 
 const handleOpen = () => {
   console.log("Open exercise!");
@@ -33,7 +45,7 @@ const handleOpen = () => {
 
 const handleEdit = (e: Event) => {
   e.stopPropagation();
-  edit.value = true;
+  isOpenEdit.value = true;
 }
 
 const handleRemove = (e: Event) => {

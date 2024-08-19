@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <div class="h-screen mr-8" style="margin-left: 332px">
     <v-skeleton-loader v-if="isFetchingWorkout" type="list-item-two-line" class="mt-8 rounded-sm"></v-skeleton-loader>
 
@@ -8,8 +8,7 @@
                 :exercise-id="exercise.exerciseId"
                 :name="exercise.name"
                 :pause-duration="exercise.pauseDuration"
-                :is-fetching="isFetchingWorkout"
-                v-model:edit="isEditingExercise"
+                :workout-id="exercise.workoutId"
                 v-model:exercises="exercises"/>
     </div>
 
@@ -17,7 +16,7 @@
       <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
     </div>
 
-    <ExerciseModal v-model:exercises="exercises as ExerciseResponse[]" v-model:open-modal="isCreatingExercise"/>
+    <ExerciseModal create-type v-model:exercises="exercises as ExerciseResponse[]" v-model:open-modal="isCreatingExercise"/>
   </div>
 </template>
 
@@ -29,11 +28,9 @@
   import Exercise from '../components/Exercise.vue'
   import ExerciseModal from '../components/ExerciseModal.vue'
 
-  // const workout = ref<WorkoutResponse | null>(null);
   const exercises = ref<ExerciseResponse[]>([]);
   const isFetchingWorkout = ref<boolean>(true);
   const isCreatingExercise = ref<boolean>(false);
-  const isEditingExercise = ref<boolean>(false);
 
   const route = useRoute();
 
