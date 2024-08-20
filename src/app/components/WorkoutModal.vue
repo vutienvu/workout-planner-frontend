@@ -5,7 +5,10 @@
         prepend-icon="mdi-pencil"
         :title="props.createType ? 'Create your workout!' : 'Edit your workout!'"
     >
-      <v-text-field v-model="workoutName" label="Workout name" variant="underlined" :rules="[workoutNameRules.required, workoutNameRules.noWhiteSpaces]" class="px-6"></v-text-field>
+      <form @submit.prevent>
+        <v-text-field @keyup.enter="handleCreateWorkout()" v-model="workoutName" label="Workout name" variant="underlined" :rules="Object.values(workoutNameRules)" class="px-6"></v-text-field>
+      </form>
+
       <template v-slot:actions>
         <v-btn
             class="ms-auto"
@@ -86,6 +89,8 @@ const handleUpdateWorkout = () => {
 }
 
 const handleCreateWorkout = () => {
+  if (!isWorkoutNameValid.value) return;
+
   const newWorkout: WorkoutRequest = {
     name: workoutName.value
   };
