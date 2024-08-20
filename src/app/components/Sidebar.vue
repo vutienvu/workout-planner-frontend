@@ -19,7 +19,7 @@
 
           <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isCreatingWorkout" :create-type="true"/>
           <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isUpdatingWorkout" :workout-id="currentWorkoutId" :old-workout-name="currentWorkoutName" :create-type="false"/>
-          <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId!"/>
+          <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId!" type="workout"/>
       </v-navigation-drawer>
     </aside>
 </template>

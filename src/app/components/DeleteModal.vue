@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="isOpen" width="500">
-    <v-card max-width="600" title="Are you sure you want to remove this workout?">
+    <v-card max-width="600" :title="`Are you sure you want to remove this ${type}?`">
       <template v-slot:actions>
         <v-btn class="ms-auto" text="Remove" variant="elevated" color="red" @click="handleRemove"></v-btn>
         <v-btn text="Cancel" @click="isOpen = false"></v-btn>
@@ -14,7 +14,8 @@ import {deleteWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
 import {useRouter} from 'vue-router'
 
 interface Props {
-  workoutId: number
+  workoutId: number,
+  type: string
 }
 
 const props = defineProps<Props>();
