@@ -11,10 +11,9 @@
 
 <script setup lang="ts">
 import {deleteWorkout, WorkoutResponse} from '../api/WorkoutAPI.ts'
-import {useRouter} from 'vue-router'
 
 interface Props {
-  workoutId: number,
+  workoutId: number | undefined,
   type: string
 }
 
@@ -23,21 +22,18 @@ const props = defineProps<Props>();
 const workouts = defineModel<WorkoutResponse[]>('workouts', { required: true });
 const isOpen = defineModel<boolean>('openModal', { required: true });
 
-const router = useRouter();
-
 const handleRemove = () => {
-  deleteWorkout(props.workoutId)
-      .then(() => {
-        workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== props.workoutId);
-        isOpen.value = false;
-        router.push({
-          name: 'home'
+  if (props.workoutId) {
+    deleteWorkout(props.workoutId)
+        .then(() => {
+          workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== props.workoutId);
+          isOpen.value = false;
         })
-      })
-      .catch(error => {
-        isOpen.value = false;
-        console.log(error.response);
-      });
+        .catch(error => {
+          isOpen.value = false;
+          console.log(error.response);
+        });
+  }
 }
 </script>
 
