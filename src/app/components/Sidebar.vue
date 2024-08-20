@@ -9,7 +9,7 @@
               <v-list-item link height=50 :title="workout.name" @click="handleOpenWorkout(workout.workoutId)"></v-list-item>
               <div class="position-absolute right-0" style="top: 50%; transform: translateY(-50%)">
                 <v-btn icon="mdi-pencil" size="x-small"  color="primary" @click="(e: Event) => handleUpdateWorkout(e, workout.workoutId, workout.name)" class="mr-1"></v-btn>
-                <v-btn icon="mdi-delete" size="x-small" @click="(e: Event) => handleDeleteWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
+                <v-btn icon="mdi-delete" size="x-small" @click="(e: Event) => handleRemoveWorkout(e, workout.workoutId)" class="mr-1"></v-btn>
               </div>
           </div>
 
@@ -19,25 +19,27 @@
 
           <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isCreatingWorkout" :create-type="true"/>
           <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isUpdatingWorkout" :workout-id="currentWorkoutId" :old-workout-name="currentWorkoutName" :create-type="false"/>
+          <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId!"/>
       </v-navigation-drawer>
     </aside>
 </template>
 
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {deleteWorkout, getWorkouts, WorkoutResponse} from '../api/WorkoutAPI.ts'
+import {useRouter} from 'vue-router'
+import {getWorkouts, WorkoutResponse} from '../api/WorkoutAPI.ts'
 import WorkoutModal from './WorkoutModal.vue'
+import DeleteModal from './DeleteModal.vue'
 
 const workouts = ref<WorkoutResponse[]>([]);
 const currentWorkoutId = ref<number>();
 const currentWorkoutName = ref<string>();
 const isCreatingWorkout = ref<boolean>(false);
 const isUpdatingWorkout = ref<boolean>(false);
+const isRemovingWorkout = ref<boolean>(false);
 const isFetchingWorkouts = ref<boolean>(true);
 
 const router = useRouter();
-const route = useRoute();
 
 onMounted(async () => {
   getWorkouts()
@@ -66,20 +68,11 @@ const handleUpdateWorkout = (event: Event, workoutId: number, workoutName: strin
   currentWorkoutId.value = workoutId;
 }
 
-const handleDeleteWorkout = (event: Event, workoutId: number) => {
+const handleRemoveWorkout = (event: Event, workoutId: number) => {
   event.stopPropagation();
-  deleteWorkout(workoutId)
-      .then(() => {
-        workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== workoutId);
-        router.push({
-          name: 'home'
-        })
-      })
-      .catch(error => {
-        console.log(error.response);
-      })
+  isRemovingWorkout.value = true;
+  currentWorkoutId.value = workoutId;
 }
-
 </script>
 
 <style scoped>
