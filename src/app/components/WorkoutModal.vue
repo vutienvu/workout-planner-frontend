@@ -1,10 +1,8 @@
 <template>
   <v-dialog v-model="isOpen" width="400">
-    <v-card
-        max-width="400"
-        prepend-icon="mdi-pencil"
-        :title="props.createType ? 'Create your workout!' : 'Edit your workout!'"
-    >
+    <v-card max-width="400">
+      <slot name="header"/>
+
       <form @submit.prevent>
         <v-text-field @keyup.enter="handleCreateWorkout()" v-model="workoutName" label="Workout name" variant="underlined" :rules="Object.values(workoutNameRules)" class="px-6"></v-text-field>
       </form>
@@ -12,12 +10,13 @@
       <template v-slot:actions>
         <v-btn
             class="ms-auto"
-            :text="props.createType ? 'Create' : 'Update'"
             variant="elevated"
             color="primary"
             :disabled="!isWorkoutNameValid"
             @click="props.createType ? handleCreateWorkout() : handleUpdateWorkout()"
-        ></v-btn>
+        >
+          <slot name="actionButton"/>
+        </v-btn>
         <v-btn
             text="Cancel"
             @click="isOpen = false"

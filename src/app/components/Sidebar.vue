@@ -17,8 +17,27 @@
             <v-btn icon="mdi-plus" size="small" @click="isCreatingWorkout = true"></v-btn>
           </div>
 
-          <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isCreatingWorkout" :create-type="true"/>
-          <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isUpdatingWorkout" :workout-id="currentWorkoutId" :old-workout-name="currentWorkoutName" :create-type="false"/>
+          <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isCreatingWorkout" :create-type="true">
+            <template v-slot:header>
+              <v-card-item prepend-icon="mdi-pencil">
+                <v-card-title>Create your workout!</v-card-title>
+              </v-card-item>
+            </template>
+            <template v-slot:actionButton>
+              Create
+            </template>
+          </WorkoutModal>
+
+        <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isUpdatingWorkout" :workout-id="currentWorkoutId" :old-workout-name="currentWorkoutName" :create-type="false">
+          <template v-slot:header>
+            <v-card-item prepend-icon="mdi-pencil">
+              <v-card-title>Update your workout!</v-card-title>
+            </v-card-item>
+          </template>
+          <template v-slot:actionButton>
+            Update
+          </template>
+        </WorkoutModal>
           <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId" type="workout"/>
       </v-navigation-drawer>
     </aside>
