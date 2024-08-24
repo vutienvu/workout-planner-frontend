@@ -53,43 +53,77 @@
             </template>
           </WorkoutModal>
 
-        <WorkoutModal v-model:open-modal="isUpdatingWorkout">
-          <template v-slot:header>
-            <v-card-item prepend-icon="mdi-pencil">
-              <v-card-title>Update your workout!</v-card-title>
-            </v-card-item>
-          </template>
-
-          <template v-slot:input1>
-            <form @submit.prevent>
-              <v-text-field @keyup.enter="handleReallyUpdateWorkout" v-model="currentWorkoutName" label="Workout name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
-            </form>
-          </template>
-
-          <template v-slot:actionButton>
-            <v-btn class="ms-auto" variant="elevated" color="primary" :disabled="!isWorkoutNameValid" @click="handleReallyUpdateWorkout">
-              Update
-            </v-btn>
-          </template>
-
-          <template v-slot:snackbarText>
-            <template>
-              <div class="text-center ma-2">
-                <v-snackbar
-                    v-model="isUpdated"
-                    :timeout="2000"
-                    location="top"
-                    color="green"
-                    style="--v-layout-left: 0"
-                >
-                  Successfuly updated workout!
-                </v-snackbar>
-              </div>
+          <WorkoutModal v-model:open-modal="isUpdatingWorkout">
+            <template v-slot:header>
+              <v-card-item prepend-icon="mdi-pencil">
+                <v-card-title>Update your workout!</v-card-title>
+              </v-card-item>
             </template>
-          </template>
-        </WorkoutModal>
 
-        <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId" type="workout"/>
+            <template v-slot:input1>
+              <form @submit.prevent>
+                <v-text-field @keyup.enter="handleReallyUpdateWorkout" v-model="currentWorkoutName" label="Workout name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
+              </form>
+            </template>
+
+            <template v-slot:actionButton>
+              <v-btn class="ms-auto" variant="elevated" color="primary" :disabled="!isWorkoutNameValid" @click="handleReallyUpdateWorkout">
+                Update
+              </v-btn>
+            </template>
+
+            <template v-slot:snackbarText>
+              <template>
+                <div class="text-center ma-2">
+                  <v-snackbar
+                      v-model="isUpdated"
+                      :timeout="2000"
+                      location="top"
+                      color="green"
+                      style="--v-layout-left: 0"
+                  >
+                    Successfuly updated workout!
+                  </v-snackbar>
+                </div>
+              </template>
+            </template>
+          </WorkoutModal>
+
+          <WorkoutModal v-model:open-modal="isRemovingWorkout">
+            <template v-slot:header>
+              <v-card-item prepend-icon="mdi-delete">
+                <v-card-title>Delete your workout!</v-card-title>
+              </v-card-item>
+            </template>
+
+            <template v-slot:input1>
+              <v-card-text>
+                Are you sure you want to remove this workout?
+              </v-card-text>
+            </template>
+
+            <template v-slot:actionButton>
+              <v-btn class="ms-auto" variant="elevated" color="red" @click="handleReallyRemoveWorkout">
+                Remove
+              </v-btn>
+            </template>
+
+            <template v-slot:snackbarText>
+              <template>
+                <div class="text-center ma-2">
+                  <v-snackbar
+                      v-model="isRemoved"
+                      :timeout="2000"
+                      location="top"
+                      color="green"
+                      style="--v-layout-left: 0"
+                  >
+                    Successfuly removed workout!
+                  </v-snackbar>
+                </div>
+              </template>
+            </template>
+          </WorkoutModal>
       </v-navigation-drawer>
     </aside>
 </template>
@@ -97,10 +131,16 @@
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRouter} from 'vue-router'
-import {getWorkouts, createWorkout, WorkoutRequest, WorkoutResponse, updateWorkout} from '../api/WorkoutAPI.ts'
+import {
+  getWorkouts,
+  createWorkout,
+  WorkoutRequest,
+  WorkoutResponse,
+  updateWorkout,
+  deleteWorkout
+} from '../api/WorkoutAPI.ts'
 import {nameRules} from '../helper/rules.ts'
 import WorkoutModal from './WorkoutModal.vue'
-import DeleteModal from './DeleteModal.vue'
 
 const workouts = ref<WorkoutResponse[]>([]);
 const currentWorkoutId = ref<number>();
@@ -113,6 +153,8 @@ const isUpdatingWorkout = ref<boolean>(false);
 const isUpdated = ref<boolean>(false);
 
 const isRemovingWorkout = ref<boolean>(false);
+const isRemoved = ref<boolean>(false);
+
 const isFetchingWorkouts = ref<boolean>(true);
 
 const router = useRouter();
@@ -185,6 +227,22 @@ const handleReallyUpdateWorkout = () => {
         .finally(() => {
           isUpdatingWorkout.value = false;
         });
+  }
+}
+
+const handleReallyRemoveWorkout = () => {
+  if (currentWorkoutId.value) {
+    deleteWorkout(currentWorkoutId.value)
+        .then(() => {
+          workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== currentWorkoutId.value);
+          isRemoved.value = true;
+        })
+        .catch(error => {
+          console.log(error.response);
+        })
+        .finally(() => {
+          isRemovingWorkout.value = false;
+        })
   }
 }
 

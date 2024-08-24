@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="isOpen" width="400">
-    <v-card max-width="400">
+  <v-dialog v-model="isOpen" width="auto">
+    <v-card min-width="400">
       <slot name="header"/>
 
       <slot v-for="i in [1, 2]" :name="`input${i}`"/>
