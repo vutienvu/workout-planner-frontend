@@ -170,14 +170,6 @@ onMounted(async () => {
       });
 });
 
-watch(() => workouts.value, (newValue, oldValue) => {
-  if((oldValue.length - newValue.length) === 1) {
-    router.push({
-      name: 'home'
-    });
-  }
-});
-
 const isWorkoutNameValid = computed(() => {
   return !!currentWorkoutName.value && currentWorkoutName.value.trim() !== '';
 });
@@ -236,6 +228,9 @@ const handleReallyRemoveWorkout = () => {
         .then(() => {
           workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== currentWorkoutId.value);
           isRemoved.value = true;
+          router.push({
+            name: 'home'
+          });
         })
         .catch(error => {
           console.log(error.response);
