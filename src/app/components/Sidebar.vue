@@ -17,44 +17,101 @@
             <v-btn icon="mdi-plus" size="small" @click="isCreatingWorkout = true"></v-btn>
           </div>
 
-          <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isCreatingWorkout" :create-type="true">
+          <WorkoutModal v-model:open-modal="isCreatingWorkout">
             <template v-slot:header>
               <v-card-item prepend-icon="mdi-pencil">
                 <v-card-title>Create your workout!</v-card-title>
               </v-card-item>
             </template>
+
+            <template v-slot:input1>
+              <form @submit.prevent>
+                <v-text-field @keyup.enter="handleReallyCreateWorkout" v-model="currentWorkoutName" label="Workout name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
+              </form>
+            </template>
+
             <template v-slot:actionButton>
-              Create
+              <v-btn class="ms-auto" variant="elevated" color="primary" :disabled="!isWorkoutNameValid" @click="handleReallyCreateWorkout">
+                Create
+              </v-btn>
+            </template>
+
+            <template v-slot:snackbarText>
+                <template>
+                  <div class="text-center ma-2">
+                    <v-snackbar
+                        v-model="isCreated"
+                        :timeout="2000"
+                        location="top"
+                        color="green"
+                        style="--v-layout-left: 0"
+                    >
+                      Successfuly created workout!
+                    </v-snackbar>
+                  </div>
+                </template>
             </template>
           </WorkoutModal>
 
-        <WorkoutModal v-model:workouts="workouts" v-model:open-modal="isUpdatingWorkout" :workout-id="currentWorkoutId" :old-workout-name="currentWorkoutName" :create-type="false">
+        <WorkoutModal v-model:open-modal="isUpdatingWorkout">
           <template v-slot:header>
             <v-card-item prepend-icon="mdi-pencil">
               <v-card-title>Update your workout!</v-card-title>
             </v-card-item>
           </template>
+
+          <template v-slot:input1>
+            <form @submit.prevent>
+              <v-text-field @keyup.enter="handleReallyUpdateWorkout" v-model="currentWorkoutName" label="Workout name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
+            </form>
+          </template>
+
           <template v-slot:actionButton>
-            Update
+            <v-btn class="ms-auto" variant="elevated" color="primary" :disabled="!isWorkoutNameValid" @click="handleReallyUpdateWorkout">
+              Update
+            </v-btn>
+          </template>
+
+          <template v-slot:snackbarText>
+            <template>
+              <div class="text-center ma-2">
+                <v-snackbar
+                    v-model="isUpdated"
+                    :timeout="2000"
+                    location="top"
+                    color="green"
+                    style="--v-layout-left: 0"
+                >
+                  Successfuly updated workout!
+                </v-snackbar>
+              </div>
+            </template>
           </template>
         </WorkoutModal>
-          <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId" type="workout"/>
+
+        <DeleteModal v-model:workouts="workouts" v-model:open-modal="isRemovingWorkout" :workout-id="currentWorkoutId" type="workout"/>
       </v-navigation-drawer>
     </aside>
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, watch} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {useRouter} from 'vue-router'
-import {getWorkouts, WorkoutResponse} from '../api/WorkoutAPI.ts'
+import {getWorkouts, createWorkout, WorkoutRequest, WorkoutResponse, updateWorkout} from '../api/WorkoutAPI.ts'
+import {nameRules} from '../helper/rules.ts'
 import WorkoutModal from './WorkoutModal.vue'
 import DeleteModal from './DeleteModal.vue'
 
 const workouts = ref<WorkoutResponse[]>([]);
 const currentWorkoutId = ref<number>();
-const currentWorkoutName = ref<string>();
+const currentWorkoutName = ref<string>('');
+
 const isCreatingWorkout = ref<boolean>(false);
+const isCreated = ref<boolean>(false);
+
 const isUpdatingWorkout = ref<boolean>(false);
+const isUpdated = ref<boolean>(false);
+
 const isRemovingWorkout = ref<boolean>(false);
 const isFetchingWorkouts = ref<boolean>(true);
 
@@ -78,6 +135,58 @@ watch(() => workouts.value, (newValue, oldValue) => {
     });
   }
 });
+
+const isWorkoutNameValid = computed(() => {
+  return !!currentWorkoutName.value && currentWorkoutName.value.trim() !== '';
+});
+
+const handleReallyCreateWorkout = () => {
+  if (!isWorkoutNameValid.value) return;
+
+  const newWorkout: WorkoutRequest = {
+    name: currentWorkoutName.value
+  };
+
+  createWorkout(newWorkout)
+      .then(workout => {
+        workouts.value.push(workout);
+        isCreated.value = true;
+        currentWorkoutName.value = "";
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        isCreatingWorkout.value = false;
+      })
+}
+
+const handleReallyUpdateWorkout = () => {
+  const newWorkout: WorkoutRequest = {
+    name: currentWorkoutName.value
+  };
+
+  if (currentWorkoutId.value) {
+    updateWorkout(currentWorkoutId.value, newWorkout)
+        .then(() => {
+          workouts.value.forEach(w => {
+            if (w.workoutId === currentWorkoutId.value) {
+              w.name = currentWorkoutName.value;
+              currentWorkoutName.value = "";
+              return;
+            }
+          });
+
+          isUpdated.value = true;
+        })
+        .catch(error => {
+          console.log(error.response);
+        })
+        .finally(() => {
+          isUpdatingWorkout.value = false;
+        });
+  }
+}
 
 const handleOpenWorkout = (workoutId: number) => {
   router.push({
