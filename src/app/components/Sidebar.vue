@@ -84,9 +84,13 @@
               </div>
           </div>
 
-          <div class="d-flex justify-center my-2">
-            <v-btn icon="mdi-plus" size="small" @click="isCreatingWorkout = true"></v-btn>
             <ActionModal v-model:open-modal="isCreatingWorkout">
+              <template v-slot:mainButton>
+                <div class="d-flex justify-center my-2">
+                  <v-btn icon="mdi-plus" size="small" @click="isCreatingWorkout = true"></v-btn>
+                </div>
+              </template>
+
               <template v-slot:header>
                 <v-card-item prepend-icon="mdi-pencil">
                   <v-card-title>Create your workout!</v-card-title>
@@ -121,7 +125,6 @@
                 </template>
               </template>
             </ActionModal>
-          </div>
       </v-navigation-drawer>
     </aside>
 </template>

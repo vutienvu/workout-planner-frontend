@@ -1,4 +1,6 @@
 <template>
+  <slot name="mainButton"/>
+
   <v-dialog v-model="isOpen" width="auto">
     <v-card min-width="400">
       <slot name="header"/>
