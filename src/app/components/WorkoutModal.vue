@@ -3,7 +3,6 @@
     <v-card min-width="400">
       <slot name="header"/>
 
-<!--      <slot v-for="i in [1, 2]" :name="`input${i}`"/>-->
       <slot name="input"/>
 
       <template v-slot:actions>
