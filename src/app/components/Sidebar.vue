@@ -24,7 +24,7 @@
               </v-card-item>
             </template>
 
-            <template v-slot:input1>
+            <template v-slot:input>
               <form @submit.prevent>
                 <v-text-field @keyup.enter="handleReallyCreateWorkout" v-model="currentWorkoutName" label="Workout name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
               </form>
@@ -60,7 +60,7 @@
               </v-card-item>
             </template>
 
-            <template v-slot:input1>
+            <template v-slot:input>
               <form @submit.prevent>
                 <v-text-field @keyup.enter="handleReallyUpdateWorkout" v-model="currentWorkoutName" label="Workout name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
               </form>
@@ -96,7 +96,7 @@
               </v-card-item>
             </template>
 
-            <template v-slot:input1>
+            <template v-slot:input>
               <v-card-text>
                 Are you sure you want to remove this workout?
               </v-card-text>
@@ -129,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {
   getWorkouts,
