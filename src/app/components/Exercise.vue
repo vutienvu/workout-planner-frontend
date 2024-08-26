@@ -45,7 +45,7 @@
     </template>
 
     <template v-slot:actionButton>
-      <v-btn class="ms-auto" variant="elevated" color="red">
+      <v-btn class="ms-auto" variant="elevated" color="red" @click="handleReallyRemoveExercise">
         Delete
       </v-btn>
     </template>
@@ -78,7 +78,20 @@ const handleReallyUpdateExercise = () => {
       })
       .finally(() => {
         isUpdatingExercise.value = false;
+      });
+}
+
+const handleReallyRemoveExercise = () => {
+  deleteExercise(newExercise.value.exerciseId)
+      .then(() => {
+        exercises.value = exercises.value.filter(e => e.exerciseId !== newExercise.value.exerciseId);
       })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        isRemovingExercise.value = false;
+      });
 }
 
 const handleOpen = () => {
@@ -93,16 +106,6 @@ const handleUpdateExercise = (e: Event) => {
 const handleRemoveExercise = (event: Event) => {
   event.stopPropagation();
   isRemovingExercise.value = true;
-
-  // e.stopPropagation();
-  //
-  // deleteExercise(exercise.exerciseId)
-  //     .then(() => {
-  //       exercises.value = exercises.value.filter(e => e.exerciseId !== exercise.exerciseId);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
 }
 
 </script>
