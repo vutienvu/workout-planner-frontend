@@ -26,13 +26,13 @@
 
       <template v-slot:input>
         <form @submit.prevent>
-          <v-text-field label="Exercise name" variant="underlined" class="px-6"></v-text-field>
-          <v-text-field label="Exercise pause duration" variant="underlined" suffix="s" class="px-6"></v-text-field>
+          <v-text-field label="Exercise name" v-model="newExercise.name" variant="underlined" class="px-6"></v-text-field>
+          <v-text-field label="Exercise pause duration" v-model="newExercise.pauseDuration" variant="underlined" suffix="s" class="px-6"></v-text-field>
         </form>
       </template>
 
       <template v-slot:actionButton>
-        <v-btn class="ms-auto" variant="elevated" color="primary">
+        <v-btn class="ms-auto" variant="elevated" color="primary" @click="handleReallyCreateExercise">
           Create
         </v-btn>
       </template>
@@ -44,7 +44,7 @@
   import {onMounted, ref, watch} from 'vue'
   import {useRoute} from 'vue-router'
   import {getWorkout} from '../api/WorkoutAPI.ts'
-  import {ExerciseResponse} from '../api/ExerciseAPI'
+  import {createExercise, ExerciseRequest, ExerciseResponse} from '../api/ExerciseAPI'
   import Exercise from '../components/Exercise.vue'
   import ActionModal from '../components/ActionModal.vue'
 
@@ -55,6 +55,12 @@
   const isCreatingExercise = ref<boolean>(false);
 
   const route = useRoute();
+
+  const newExercise = ref<ExerciseRequest>({
+    name: '',
+    pauseDuration: 0,
+    workoutId: Number(route.params.workoutId)
+  });
 
   onMounted(async () => {
     const workoutId: number = Number(route.params.workoutId);
@@ -79,6 +85,24 @@
         }).catch(() => {
           isFetchingWorkout.value = false;
           isExisting.value = false;
+        });
+  }
+
+  const handleReallyCreateExercise = () => {
+    createExercise(newExercise.value)
+        .then(exercise => {
+          exercises.value.push(exercise);
+          newExercise.value = {
+            name: '',
+            pauseDuration: 0,
+            workoutId: Number(route.params.workoutId)
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          isCreatingExercise.value = false;
         });
   }
 
