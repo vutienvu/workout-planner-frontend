@@ -7,10 +7,7 @@
     <div v-else>
       <div v-if="exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
       <Exercise v-else v-for="exercise in exercises" :key="exercise.exerciseId"
-                :exercise-id="exercise.exerciseId"
-                :name="exercise.name"
-                :pause-duration="exercise.pauseDuration"
-                :workout-id="exercise.workoutId"
+                :exercise="exercise"
                 v-model:exercises="exercises"/>
     </div>
 
