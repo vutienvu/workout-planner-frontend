@@ -61,7 +61,7 @@ const exercise = defineModel<ExerciseResponse>('exercise', { required: true });
 
 const exercises = defineModel<ExerciseResponse[]>('exercises', { required: true });
 
-const newExercise = ref<ExerciseResponse>({
+const exerciseToBeUpdated = ref<ExerciseResponse>({
   ...exercise.value
 });
 
@@ -69,9 +69,9 @@ const isUpdatingExercise = ref<boolean>(false);
 const isRemovingExercise = ref<boolean>(false);
 
 const handleReallyUpdateExercise = () => {
-  updateExercise(newExercise.value.exerciseId, newExercise.value)
+  updateExercise(exerciseToBeUpdated.value.exerciseId, exerciseToBeUpdated.value)
       .then(() => {
-        exercise.value = newExercise.value;
+        exercise.value = exerciseToBeUpdated.value;
       })
       .catch(error => {
         console.log(error);
@@ -82,9 +82,9 @@ const handleReallyUpdateExercise = () => {
 }
 
 const handleReallyRemoveExercise = () => {
-  deleteExercise(newExercise.value.exerciseId)
+  deleteExercise(exerciseToBeUpdated.value.exerciseId)
       .then(() => {
-        exercises.value = exercises.value.filter(e => e.exerciseId !== newExercise.value.exerciseId);
+        exercises.value = exercises.value.filter(e => e.exerciseId !== exerciseToBeUpdated.value.exerciseId);
       })
       .catch(error => {
         console.log(error);
