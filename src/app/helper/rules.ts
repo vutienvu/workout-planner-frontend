@@ -3,4 +3,8 @@ const nameRules = {
     noWhiteSpaces: (value: string) => value.trim() !== '' || 'Name cannot be only whitespaces!'
 }
 
-export { nameRules }
+const numberRules = {
+    positiveNumber: (value: number) => value > 0 || 'Value should be higher than 0!'
+}
+
+export { nameRules, numberRules }

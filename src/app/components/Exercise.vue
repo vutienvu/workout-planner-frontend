@@ -20,13 +20,13 @@
 
     <template v-slot:input>
       <form @submit.prevent>
-        <v-text-field label="Exercise name" v-model="newExercise.name" variant="underlined" class="px-6"></v-text-field>
-        <v-text-field label="Exercise pause duration" v-model="newExercise.pauseDuration" variant="underlined" suffix="s" class="px-6"></v-text-field>
+        <v-text-field label="Exercise name" v-model="exerciseToBeUpdated.name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
+        <v-text-field label="Exercise pause duration" v-model="exerciseToBeUpdated.pauseDuration" variant="underlined" suffix="s" :rules="Object.values(numberRules)"  class="px-6"></v-text-field>
       </form>
     </template>
 
     <template v-slot:actionButton>
-      <v-btn class="ms-auto" variant="elevated" color="primary" @click="handleReallyUpdateExercise">
+      <v-btn class="ms-auto" variant="elevated" color="primary" :disabled="!isExerciseInputValid" @click="handleReallyUpdateExercise">
         Update
       </v-btn>
     </template>
@@ -53,7 +53,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
+import {nameRules, numberRules} from '../helper/rules.ts'
 import {deleteExercise, updateExercise, ExerciseResponse} from '../api/ExerciseAPI.ts'
 import ActionModal from './ActionModal.vue'
 
@@ -67,6 +68,10 @@ const exerciseToBeUpdated = ref<ExerciseResponse>({
 
 const isUpdatingExercise = ref<boolean>(false);
 const isRemovingExercise = ref<boolean>(false);
+
+const isExerciseInputValid = computed(() => {
+  return !!exerciseToBeUpdated.value.name && exerciseToBeUpdated.value.pauseDuration > 0;
+});
 
 const handleReallyUpdateExercise = () => {
   updateExercise(exerciseToBeUpdated.value.exerciseId, exerciseToBeUpdated.value)
