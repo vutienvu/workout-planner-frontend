@@ -12,13 +12,34 @@
                 :pause-duration="exercise.pauseDuration"
                 :workout-id="exercise.workoutId"
                 v-model:exercises="exercises"/>
-
-      <div class="d-flex justify-center mt-4">
-        <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
-      </div>
     </div>
 
-    <ExerciseModal create-type v-model:exercises="exercises as ExerciseResponse[]" v-model:open-modal="isCreatingExercise"/>
+    <ActionModal v-model:open-modal="isCreatingExercise">
+      <template v-slot:mainButton>
+        <div class="d-flex justify-center mt-4">
+          <v-btn icon="mdi-plus" color="primary" size="large" @click="handleCreateExercise"></v-btn>
+        </div>
+      </template>
+
+      <template v-slot:header>
+        <v-card-item prepend-icon="mdi-pencil">
+          <v-card-title>Create your exercise!</v-card-title>
+        </v-card-item>
+      </template>
+
+      <template v-slot:input>
+        <form @submit.prevent>
+          <v-text-field label="Exercise name" variant="underlined" class="px-6"></v-text-field>
+          <v-text-field label="Exercise pause duration" variant="underlined" class="px-6"></v-text-field>
+        </form>
+      </template>
+
+      <template v-slot:actionButton>
+        <v-btn class="ms-auto" variant="elevated" color="primary">
+          Create
+        </v-btn>
+      </template>
+    </ActionModal>
   </div>
 </template>
 
@@ -28,12 +49,13 @@
   import {getWorkout} from '../api/WorkoutAPI.ts'
   import {ExerciseResponse} from '../api/ExerciseAPI'
   import Exercise from '../components/Exercise.vue'
-  import ExerciseModal from '../components/ExerciseModal.vue'
+  import ActionModal from '../components/ActionModal.vue'
 
   const exercises = ref<ExerciseResponse[]>([]);
   const isFetchingWorkout = ref<boolean>(true);
-  const isCreatingExercise = ref<boolean>(false);
   const isExisting = ref<boolean>(false);
+
+  const isCreatingExercise = ref<boolean>(false);
 
   const route = useRoute();
 
