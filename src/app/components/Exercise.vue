@@ -30,26 +30,66 @@
         Update
       </v-btn>
     </template>
+
+    <template v-slot:snackbarText>
+      <div class="text-center ma-2">
+        <v-snackbar
+            v-model="isUpdated"
+            :timeout="2000"
+            location="top"
+            color="success"
+            style="--v-layout-left: 0"
+        >
+          Successfuly updated exercise!
+        </v-snackbar>
+      </div>
+
+      <div class="text-center ma-2">
+        <v-snackbar
+            v-model="isUpdatedError"
+            :timeout="2000"
+            location="top"
+            color="success"
+            style="--v-layout-left: 0"
+        >
+          Something went wrong!
+        </v-snackbar>
+      </div>
+    </template>
   </ActionModal>
   <ActionModal v-model:open-modal="isRemovingExercise">
-    <template v-slot:header>
-      <v-card-item prepend-icon="mdi-delete">
-        <v-card-title>Delete your exercise!</v-card-title>
-      </v-card-item>
-    </template>
+      <template v-slot:header>
+        <v-card-item prepend-icon="mdi-delete">
+          <v-card-title>Delete your exercise!</v-card-title>
+        </v-card-item>
+      </template>
 
-    <template v-slot:input>
-      <v-card-text>
-        Are you sure you want to remove this exercise?
-      </v-card-text>
-    </template>
+      <template v-slot:input>
+        <v-card-text>
+          Are you sure you want to remove this exercise?
+        </v-card-text>
+      </template>
 
-    <template v-slot:actionButton>
-      <v-btn class="ms-auto" variant="elevated" color="red" @click="handleReallyRemoveExercise">
-        Delete
-      </v-btn>
-    </template>
-  </ActionModal>
+      <template v-slot:actionButton>
+        <v-btn class="ms-auto" variant="elevated" color="red" @click="handleReallyRemoveExercise">
+          Delete
+        </v-btn>
+      </template>
+
+      <template v-slot:snackbarText>
+        <div class="text-center ma-2">
+          <v-snackbar
+              v-model="isRemovedError"
+              :timeout="2000"
+              location="top"
+              color="error"
+              style="--v-layout-left: 0"
+          >
+            Something went wrong!
+          </v-snackbar>
+        </div>
+      </template>
+    </ActionModal>
 </template>
 
 <script setup lang="ts">
@@ -67,7 +107,11 @@ const exerciseToBeUpdated = ref<ExerciseResponse>({
 });
 
 const isUpdatingExercise = ref<boolean>(false);
+const isUpdated = ref<boolean>(false);
+const isUpdatedError = ref<boolean>(false);
+
 const isRemovingExercise = ref<boolean>(false);
+const isRemovedError = ref<boolean>(false);
 
 watch(() => isUpdatingExercise.value, (newValue) => {
   if (newValue) {
@@ -87,9 +131,10 @@ const handleReallyUpdateExercise = () => {
   updateExercise(exerciseToBeUpdated.value.exerciseId, exerciseToBeUpdated.value)
       .then(() => {
         exercise.value = exerciseToBeUpdated.value;
+        isUpdated.value = true
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
+        isUpdatedError.value = true;
       })
       .finally(() => {
         isUpdatingExercise.value = false;
@@ -101,8 +146,8 @@ const handleReallyRemoveExercise = () => {
       .then(() => {
         exercises.value = exercises.value.filter(e => e.exerciseId !== exerciseToBeUpdated.value.exerciseId);
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
+        isRemovedError.value = true;
       })
       .finally(() => {
         isRemovingExercise.value = false;

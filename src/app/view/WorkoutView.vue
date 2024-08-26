@@ -36,6 +36,32 @@
           Create
         </v-btn>
       </template>
+
+      <template v-slot:snackbarText>
+        <div class="text-center ma-2">
+          <v-snackbar
+              v-model="isCreated"
+              :timeout="2000"
+              location="top"
+              color="success"
+              style="--v-layout-left: 0"
+          >
+            Successfuly created exercise!
+          </v-snackbar>
+        </div>
+
+        <div class="text-center ma-2">
+          <v-snackbar
+              v-model="isError"
+              :timeout="2000"
+              location="top"
+              color="success"
+              style="--v-layout-left: 0"
+          >
+            Something went wrong!
+          </v-snackbar>
+        </div>
+      </template>
     </ActionModal>
   </div>
 </template>
@@ -53,7 +79,10 @@
   const isFetchingWorkout = ref<boolean>(true);
   const isExisting = ref<boolean>(false);
 
+  const isError = ref<boolean>(false);
+
   const isCreatingExercise = ref<boolean>(false);
+  const isCreated = ref<boolean>(false);
 
   const route = useRoute();
 
@@ -85,12 +114,14 @@
     getWorkout(workoutId)
         .then(workoutResponse => {
           exercises.value = workoutResponse.exercises;
-          isFetchingWorkout.value = false;
           isExisting.value = true;
-        }).catch(() => {
-          isFetchingWorkout.value = false;
+        })
+        .catch(() => {
           isExisting.value = false;
-        });
+        })
+        .finally(() => {
+          isFetchingWorkout.value = false;
+        })
   }
 
   const handleReallyCreateExercise = () => {
@@ -99,14 +130,15 @@
     createExercise(newExercise.value)
         .then(exercise => {
           exercises.value.push(exercise);
+          isCreated.value = true;
           newExercise.value = {
             name: '',
             pauseDuration: 0,
             workoutId: Number(route.params.workoutId)
           }
         })
-        .catch(error => {
-          console.log(error);
+        .catch(() => {
+          isError.value = true;
         })
         .finally(() => {
           isCreatingExercise.value = false;
