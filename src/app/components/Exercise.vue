@@ -21,7 +21,7 @@
     <template v-slot:input>
       <form @submit.prevent>
         <v-text-field label="Exercise name" v-model="exerciseToBeUpdated.name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
-        <v-text-field label="Exercise pause duration" v-model="exerciseToBeUpdated.pauseDuration" variant="underlined" suffix="s" :rules="Object.values(numberRules)"  class="px-6"></v-text-field>
+        <v-text-field @keyup.enter="handleReallyUpdateExercise" label="Exercise pause duration" v-model="exerciseToBeUpdated.pauseDuration" variant="underlined" suffix="s" :rules="Object.values(numberRules)"  class="px-6"></v-text-field>
       </form>
     </template>
 
@@ -74,6 +74,8 @@ const isExerciseInputValid = computed(() => {
 });
 
 const handleReallyUpdateExercise = () => {
+  if (!isExerciseInputValid.value) return;
+
   updateExercise(exerciseToBeUpdated.value.exerciseId, exerciseToBeUpdated.value)
       .then(() => {
         exercise.value = exerciseToBeUpdated.value;

@@ -27,7 +27,7 @@
       <template v-slot:input>
         <form @submit.prevent>
           <v-text-field label="Exercise name" v-model="newExercise.name" variant="underlined" :rules="Object.values(nameRules)" class="px-6"></v-text-field>
-          <v-text-field label="Exercise pause duration" v-model="newExercise.pauseDuration" variant="underlined" suffix="s" :rules="Object.values(numberRules)" class="px-6"></v-text-field>
+          <v-text-field @keyup.enter="handleReallyCreateExercise" label="Exercise pause duration" v-model="newExercise.pauseDuration" variant="underlined" suffix="s" :rules="Object.values(numberRules)" class="px-6"></v-text-field>
         </form>
       </template>
 
@@ -94,6 +94,8 @@
   }
 
   const handleReallyCreateExercise = () => {
+    if (!isExerciseInputValid.value) return;
+
     createExercise(newExercise.value)
         .then(exercise => {
           exercises.value.push(exercise);
