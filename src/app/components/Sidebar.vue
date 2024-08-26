@@ -196,6 +196,8 @@ const handleReallyCreateWorkout = () => {
 }
 
 const handleReallyUpdateWorkout = () => {
+  if (!isWorkoutNameValid.value) return;
+
   const newWorkout: WorkoutRequest = {
     name: currentWorkoutName.value
   };
