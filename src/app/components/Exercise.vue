@@ -20,8 +20,8 @@
 
   <template v-slot:input>
     <form @submit.prevent>
-      <v-text-field label="Exercise name" variant="underlined" class="px-6"></v-text-field>
-      <v-text-field label="Exercise pause duration" variant="underlined" class="px-6"></v-text-field>
+      <v-text-field label="Exercise name" v-model="exercise.name" variant="underlined" class="px-6"></v-text-field>
+      <v-text-field label="Exercise pause duration" v-model="exercise.pauseDuration" variant="underlined" suffix="s" class="px-6"></v-text-field>
     </form>
   </template>
 
