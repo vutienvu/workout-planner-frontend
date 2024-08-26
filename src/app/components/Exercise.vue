@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {nameRules, numberRules} from '../helper/rules.ts'
 import {deleteExercise, updateExercise, ExerciseResponse} from '../api/ExerciseAPI.ts'
 import ActionModal from './ActionModal.vue'
@@ -68,6 +68,14 @@ const exerciseToBeUpdated = ref<ExerciseResponse>({
 
 const isUpdatingExercise = ref<boolean>(false);
 const isRemovingExercise = ref<boolean>(false);
+
+watch(() => isUpdatingExercise.value, (newValue) => {
+  if (newValue) {
+    exerciseToBeUpdated.value = {
+      ...exercise.value
+    };
+  }
+});
 
 const isExerciseInputValid = computed(() => {
   return !!exerciseToBeUpdated.value.name && exerciseToBeUpdated.value.pauseDuration > 0;
