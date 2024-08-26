@@ -16,7 +16,7 @@
           <ActionModal v-model:open-modal="isCreatingWorkout">
               <template v-slot:mainButton>
                 <div class="d-flex justify-center my-2">
-                  <v-btn icon="mdi-plus" size="small" @click="isCreatingWorkout = true"></v-btn>
+                  <v-btn icon="mdi-plus" size="small" @click="handleCreateWorkout"></v-btn>
                 </div>
               </template>
 
@@ -248,6 +248,11 @@ const handleOpenWorkout = (workoutId: number) => {
       workoutId: workoutId
     }
   });
+}
+
+const handleCreateWorkout = () => {
+  isCreatingWorkout.value = true;
+  currentWorkoutName.value = '';
 }
 
 const handleUpdateWorkout = (event: Event, workoutId: number, workoutName: string) => {
