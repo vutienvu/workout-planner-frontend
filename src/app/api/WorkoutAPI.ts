@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import { AxiosResponse, AxiosError } from 'axios'
 import axiosInstance from './BaseAPI.ts'
 import { ExerciseResponse } from './ExerciseAPI.ts'
 
@@ -51,7 +51,7 @@ export async function createWorkout(newWorkout: WorkoutRequest) {
 
 export async function updateWorkout(workoutId: number, newWorkout: WorkoutRequest) {
     return axiosInstance.put<WorkoutRequest>(`/workouts/${workoutId}`, newWorkout)
-        .catch(error => {
+        .catch((error: AxiosError) => {
             throw error;
         });
 }
