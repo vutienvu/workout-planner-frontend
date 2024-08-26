@@ -12,25 +12,25 @@
   </v-card>
 
   <ActionModal v-model:open-modal="isUpdatingExercise">
-  <template v-slot:header>
-    <v-card-item prepend-icon="mdi-pencil">
-      <v-card-title>Update your exercise!</v-card-title>
-    </v-card-item>
-  </template>
+    <template v-slot:header>
+      <v-card-item prepend-icon="mdi-pencil">
+        <v-card-title>Update your exercise!</v-card-title>
+      </v-card-item>
+    </template>
 
-  <template v-slot:input>
-    <form @submit.prevent>
-      <v-text-field label="Exercise name" v-model="exercise.name" variant="underlined" class="px-6"></v-text-field>
-      <v-text-field label="Exercise pause duration" v-model="exercise.pauseDuration" variant="underlined" suffix="s" class="px-6"></v-text-field>
-    </form>
-  </template>
+    <template v-slot:input>
+      <form @submit.prevent>
+        <v-text-field label="Exercise name" v-model="newExercise.name" variant="underlined" class="px-6"></v-text-field>
+        <v-text-field label="Exercise pause duration" v-model="newExercise.pauseDuration" variant="underlined" suffix="s" class="px-6"></v-text-field>
+      </form>
+    </template>
 
-  <template v-slot:actionButton>
-    <v-btn class="ms-auto" variant="elevated" color="primary">
-      Update
-    </v-btn>
-  </template>
-</ActionModal>
+    <template v-slot:actionButton>
+      <v-btn class="ms-auto" variant="elevated" color="primary" @click="handleReallyUpdateExercise">
+        Update
+      </v-btn>
+    </template>
+  </ActionModal>
   <ActionModal v-model:open-modal="isRemovingExercise">
     <template v-slot:header>
       <v-card-item prepend-icon="mdi-delete">
@@ -54,19 +54,32 @@
 
 <script setup lang="ts">
 import {ref} from 'vue'
-import {deleteExercise, ExerciseResponse} from '../api/ExerciseAPI.ts'
+import {deleteExercise, updateExercise, ExerciseResponse} from '../api/ExerciseAPI.ts'
 import ActionModal from './ActionModal.vue'
 
-interface Props {
-  exercise: ExerciseResponse
-}
-
-const { exercise } = defineProps<Props>();
+const exercise = defineModel<ExerciseResponse>('exercise', { required: true });
 
 const exercises = defineModel<ExerciseResponse[]>('exercises', { required: true });
 
+const newExercise = ref<ExerciseResponse>({
+  ...exercise.value
+});
+
 const isUpdatingExercise = ref<boolean>(false);
 const isRemovingExercise = ref<boolean>(false);
+
+const handleReallyUpdateExercise = () => {
+  updateExercise(newExercise.value.exerciseId, newExercise.value)
+      .then(() => {
+        exercise.value = newExercise.value;
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        isUpdatingExercise.value = false;
+      })
+}
 
 const handleOpen = () => {
   console.log("Open exercise!");

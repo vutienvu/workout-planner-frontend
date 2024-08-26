@@ -6,8 +6,8 @@
 
     <div v-else>
       <div v-if="exercises.length === 0" class="text-h4 my-8 text-center">Workout contains no exercises.</div>
-      <Exercise v-else v-for="exercise in exercises" :key="exercise.exerciseId"
-                :exercise="exercise"
+      <Exercise v-else v-for="(exercise, i) in exercises" :key="exercise.exerciseId"
+                v-model:exercise="exercises[i]"
                 v-model:exercises="exercises"/>
     </div>
 
