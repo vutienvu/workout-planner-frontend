@@ -109,19 +109,29 @@
             </template>
 
             <template v-slot:snackbarText>
-              <template>
-                <div class="text-center ma-2">
-                  <v-snackbar
-                      v-model="isUpdated"
-                      :timeout="2000"
-                      location="top"
-                      color="green"
-                      style="--v-layout-left: 0"
-                  >
-                    Successfuly updated workout!
-                  </v-snackbar>
-                </div>
-              </template>
+              <div class="text-center ma-2">
+                <v-snackbar
+                    v-model="isUpdated"
+                    :timeout="2000"
+                    location="top"
+                    color="success"
+                    style="--v-layout-left: 0"
+                >
+                  Successfuly updated workout!
+                </v-snackbar>
+              </div>
+
+              <div class="text-center ma-2">
+                <v-snackbar
+                    v-model="isError"
+                    :timeout="2000"
+                    location="top"
+                    color="error"
+                    style="--v-layout-left: 0"
+                >
+                  Something went wrong!
+                </v-snackbar>
+              </div>
             </template>
           </ActionModal>
       </v-navigation-drawer>
@@ -155,6 +165,8 @@ const isUpdated = ref<boolean>(false);
 const isRemovingWorkout = ref<boolean>(false);
 const isRemoved = ref<boolean>(false);
 
+const isError = ref<boolean>(false);
+
 const isFetchingWorkouts = ref<boolean>(true);
 
 const router = useRouter();
@@ -162,12 +174,14 @@ const router = useRouter();
 onMounted(async () => {
   getWorkouts()
       .then(workoutsResponse => {
-          workouts.value = workoutsResponse;
-          isFetchingWorkouts.value = false;
-      }).catch(error => {
-          console.log(error.response);
-          isFetchingWorkouts.value = false;
-      });
+        workouts.value = workoutsResponse;
+      })
+      .catch(() => {
+        isError.value = true;
+      })
+      .finally(() => {
+        isFetchingWorkouts.value = false;
+      })
 });
 
 const isWorkoutNameValid = computed(() => {
@@ -187,8 +201,8 @@ const handleReallyCreateWorkout = () => {
         isCreated.value = true;
         currentWorkoutName.value = "";
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
+        isError.value = true;
       })
       .finally(() => {
         isCreatingWorkout.value = false;
@@ -215,8 +229,8 @@ const handleReallyUpdateWorkout = () => {
 
           isUpdated.value = true;
         })
-        .catch(error => {
-          console.log(error.response);
+        .catch(() => {
+          isError.value = true;
         })
         .finally(() => {
           isUpdatingWorkout.value = false;
@@ -234,8 +248,8 @@ const handleReallyRemoveWorkout = () => {
             name: 'home'
           });
         })
-        .catch(error => {
-          console.log(error.response);
+        .catch(() => {
+          isError.value = true;
         })
         .finally(() => {
           isRemovingWorkout.value = false;
