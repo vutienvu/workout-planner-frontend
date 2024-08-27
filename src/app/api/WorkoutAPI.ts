@@ -1,5 +1,5 @@
-import { AxiosResponse, AxiosError } from 'axios'
-import axiosInstance from './BaseAPI.ts'
+import { AxiosResponse as Response } from 'axios'
+import BaseAPI from './BaseAPI.ts'
 import { ExerciseResponse } from './ExerciseAPI.ts'
 
 export interface WorkoutRequest {
@@ -12,46 +12,29 @@ export interface WorkoutResponse {
     exercises: ExerciseResponse[]
 }
 
-export async function getWorkouts(){
-    return axiosInstance.get<WorkoutResponse[]>(`/workouts`)
-        .then(response => {
-            return response.data;
-        })
-        .catch(error => {
-            throw error;
-        });
+const WorkoutAPI = {
+    API: new BaseAPI(),
+    DOMAIN: 'workouts',
+
+    getAll: function() : Promise<WorkoutResponse[]> {
+        return this.API.getAll<WorkoutResponse>([this.DOMAIN]);
+    },
+
+    get: function(workoutId: number): Promise<WorkoutResponse> {
+        return this.API.get<WorkoutResponse>([this.DOMAIN, workoutId]);
+    },
+
+    create: function(newWorkout: WorkoutRequest): Promise<WorkoutResponse> {
+        return this.API.post<WorkoutResponse>([this.DOMAIN], newWorkout);
+    },
+
+    delete: function(workoutId: number): Promise<Response> {
+        return this.API.delete([this.DOMAIN, workoutId]);
+    },
+
+    update: function(workoutId: number, newWorkout: WorkoutRequest): Promise<Response> {
+        return this.API.put([this.DOMAIN, workoutId], newWorkout);
+    }
 }
 
-export async function getWorkout(workoutId: number): Promise<WorkoutResponse> {
-    return axiosInstance.get<WorkoutResponse>(`/workouts/${workoutId}`)
-        .then(response => {
-            return response.data;
-        })
-        .catch(error => {
-            throw error;
-        });
-}
-
-export async function deleteWorkout(workoutId: number) {
-    return axiosInstance.delete<WorkoutResponse>(`/workouts/${workoutId}`)
-        .catch(error => {
-            throw error;
-        });
-}
-
-export async function createWorkout(newWorkout: WorkoutRequest) {
-    return axiosInstance.post<WorkoutRequest, AxiosResponse<WorkoutResponse>>(`/workouts`, newWorkout)
-        .then(response => {
-            return response.data;
-        })
-        .catch(error => {
-            throw error;
-        });
-}
-
-export async function updateWorkout(workoutId: number, newWorkout: WorkoutRequest) {
-    return axiosInstance.put<WorkoutRequest>(`/workouts/${workoutId}`, newWorkout)
-        .catch((error: AxiosError) => {
-            throw error;
-        });
-}
+export default WorkoutAPI;
