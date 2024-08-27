@@ -69,7 +69,7 @@
 <script setup lang="ts">
   import {computed, onMounted, ref, watch} from 'vue'
   import {useRoute} from 'vue-router'
-  import {getWorkout} from '../api/WorkoutAPI.ts'
+  import WorkoutAPI from '../api/WorkoutAPI.ts'
   import {nameRules, numberRules} from '../helper/rules.ts'
   import {createExercise, ExerciseRequest, ExerciseResponse} from '../api/ExerciseAPI'
   import Exercise from '../components/Exercise.vue'
@@ -111,7 +111,7 @@
   });
 
   const fetchWorkout = (workoutId: number) => {
-    getWorkout(workoutId)
+    WorkoutAPI.get(workoutId)
         .then(workoutResponse => {
           exercises.value = workoutResponse.exercises;
           isExisting.value = true;
@@ -121,7 +121,7 @@
         })
         .finally(() => {
           isFetchingWorkout.value = false;
-        })
+        });
   }
 
   const handleReallyCreateExercise = () => {

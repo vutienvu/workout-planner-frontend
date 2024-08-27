@@ -141,13 +141,9 @@
 <script setup lang="ts">
 import {computed, onMounted, ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {
-  getWorkouts,
-  createWorkout,
+import WorkoutAPI, {
   WorkoutRequest,
   WorkoutResponse,
-  updateWorkout,
-  deleteWorkout
 } from '../api/WorkoutAPI.ts'
 import {nameRules} from '../helper/rules.ts'
 import ActionModal from './ActionModal.vue'
@@ -172,7 +168,7 @@ const isFetchingWorkouts = ref<boolean>(true);
 const router = useRouter();
 
 onMounted(async () => {
-  getWorkouts()
+  WorkoutAPI.getAll()
       .then(workoutsResponse => {
         workouts.value = workoutsResponse;
       })
@@ -181,7 +177,7 @@ onMounted(async () => {
       })
       .finally(() => {
         isFetchingWorkouts.value = false;
-      })
+      });
 });
 
 const isWorkoutNameValid = computed(() => {
@@ -195,7 +191,7 @@ const handleReallyCreateWorkout = () => {
     name: currentWorkoutName.value
   };
 
-  createWorkout(newWorkout)
+  WorkoutAPI.create(newWorkout)
       .then(workout => {
         workouts.value.push(workout);
         isCreated.value = true;
@@ -206,7 +202,7 @@ const handleReallyCreateWorkout = () => {
       })
       .finally(() => {
         isCreatingWorkout.value = false;
-      })
+      });
 }
 
 const handleReallyUpdateWorkout = () => {
@@ -217,7 +213,7 @@ const handleReallyUpdateWorkout = () => {
   };
 
   if (currentWorkoutId.value) {
-    updateWorkout(currentWorkoutId.value, newWorkout)
+    WorkoutAPI.update(currentWorkoutId.value, newWorkout)
         .then(() => {
           workouts.value.forEach(w => {
             if (w.workoutId === currentWorkoutId.value) {
@@ -240,20 +236,20 @@ const handleReallyUpdateWorkout = () => {
 
 const handleReallyRemoveWorkout = () => {
   if (currentWorkoutId.value) {
-    deleteWorkout(currentWorkoutId.value)
-        .then(() => {
-          workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== currentWorkoutId.value);
-          isRemoved.value = true;
-          router.push({
-            name: 'home'
-          });
-        })
-        .catch(() => {
-          isError.value = true;
-        })
-        .finally(() => {
-          isRemovingWorkout.value = false;
-        })
+    WorkoutAPI.delete(currentWorkoutId.value)
+      .then(() => {
+        workouts.value = workouts.value.filter((w: WorkoutResponse) => w.workoutId !== currentWorkoutId.value);
+        isRemoved.value = true;
+        router.push({
+          name: 'home'
+        });
+      })
+      .catch(() => {
+        isError.value = true;
+      })
+      .finally(() => {
+        isRemovingWorkout.value = false;
+      });
   }
 }
 
